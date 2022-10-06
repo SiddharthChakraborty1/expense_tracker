@@ -44,7 +44,27 @@ class PaymentTypeViewSet(ModelViewSet):
     
 class PaymentViewSet(ModelViewSet):
     
-    serializer_class = PaymentSerializer
     queryset = Payment.objects.all()
-        
+    serializer_class = PaymentSerializer
+    serializer_action_classes = {
+        'list': PaymentSerializerReadOnly
+    }
+    
+    def get_serializer_class(self):
+        try:
+            return self.serializer_action_classes[self.action]
+        except (KeyError, AttributeError):
+            return super().get_serializer_class()
+    
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        category_id = data.get('category')
+        sub_category_id = data.get('sub_category')
+        print('category', category_id)
+        print('sub_category', sub_category_id)
+        if SubCategory.objects.filter(category__id=category_id, id=sub_category_id).exists():
+            return super().create(request, *args, **kwargs)
+        else:
+            return Response({'error': 'In valid sub category id w.r.t category'},
+                            status=status.HTTP_400_BAD_REQUEST)
         

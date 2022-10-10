@@ -17,9 +17,7 @@ class SubCategory(models.Model):
     
     def __str__(self):
         return self.name
-    
 
-    
 
 class PaymentType(models.Model):
     
@@ -34,6 +32,6 @@ class Payment(models.Model):
     category =          models.ForeignKey(Category, on_delete=models.DO_NOTHING)
     sub_category =      models.ForeignKey(SubCategory, on_delete=models.DO_NOTHING)
     amount =            models.DecimalField(max_digits=10, decimal_places=2)
-    created_at =        models.DateTimeField(auto_now_add=True)
+    created_at =        models.DateTimeField()
     payment_type =      models.ForeignKey(PaymentType, on_delete=models.DO_NOTHING)
     
